@@ -11,7 +11,7 @@ const vacantesSchema = new mongoose.Schema({
     contrato: { type: String, trim: true },
     descripcion: { type: String, trim: true },
     url: { type: String, lowercase: true },
-    skill: [String],
+    skills: [String],
     candidatos: [{
         nombre: String,
         email: String,

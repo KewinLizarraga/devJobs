@@ -8,20 +8,25 @@ const router = require('./routes');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-
+const bodyParser = require('body-parser');
 
 require('dotenv').config({ path: 'variables.env' });
 
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 app.engine('handlebars',
-    exphbs(
-        { defaultLayout: 'layout' }
-    )
+    exphbs({
+        defaultLayout: 'layout',
+        helpers: require('./helpers/handlebars')
+    })
 );
 app.set('view engine', 'handlebars');
 
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use(cookieParser());
 
