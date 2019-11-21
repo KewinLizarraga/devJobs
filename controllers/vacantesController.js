@@ -26,5 +26,28 @@ module.exports = {
             pageName: vacante.titulo,
             barra: true
         });
+    },
+    formEditarVacante: async (req, res, next) => {
+        const vacante = await Vacante.findOne({ url: req.params.url });
+
+        if (!vacante) return next();
+
+        res.render('editar-vacante', {
+            vacante,
+            pageName: `Editar - ${vacante.titulo}`
+        });
+    },
+    editarVacante: async (req, res, next) => {
+        const vacanteActualizada = req.body;
+
+        vacanteActualizada.skills = req.body.skills.split(',');
+
+        const vacante = await Vacante.findOneAndUpdate(
+            { url: req.params.url },
+            vacanteActualizada,
+            { new: true, runValidators: true, useFindAndModify: false }
+        );
+
+        res.redirect(`/vacantes/${vacante.url}`);
     }
 }
