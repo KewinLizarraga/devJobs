@@ -4,6 +4,7 @@ const { check, sanitizeBody } = require('express-validator');
 const homeController = require('../controllers/homeController');
 const vacantesController = require('../controllers/vacantesController');
 const usuariosController = require('../controllers/usuariosController');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
 
@@ -32,5 +33,8 @@ router.post('/crear-cuenta',
     usuariosController.validarRegistro,
     usuariosController.crearCuenta
 );
+
+router.get('/iniciar-sesion', usuariosController.formIniciarSesion);
+router.post('/iniciar-sesion', authController.autenticarUsuario);
 
 module.exports = router;
