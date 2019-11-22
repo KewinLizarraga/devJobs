@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const bodyParser = require('body-parser');
+const flash = require('connect-flash');
 
 require('dotenv').config({ path: 'variables.env' });
 
@@ -27,7 +28,6 @@ app.set('view engine', 'handlebars');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 app.use(cookieParser());
 
 app.use(session({
@@ -38,6 +38,11 @@ app.use(session({
     store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 
+app.use(flash());
+app.use((req, res, next) => {
+    res.locals.mensajes = req.flash();
+    next();
+});
 
 app.use('/', router);
 
