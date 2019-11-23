@@ -10,6 +10,7 @@ module.exports = {
     agregarVacante: async (req, res) => {
         const vacante = new Vacante(req.body);
 
+        vacante.autor = req.user._id;
         vacante.skills = req.body.skills.split(',');
 
         const nuevaVacante = await vacante.save();

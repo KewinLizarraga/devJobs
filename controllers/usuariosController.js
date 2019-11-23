@@ -46,7 +46,4 @@ module.exports = {
             pageName: 'Iniciar Sesión - DevJobs'
         });
     },
-    iniciarSesion: async (req, res, next) => {
-
-    }
 }
