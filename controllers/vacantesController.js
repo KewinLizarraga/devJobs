@@ -1,10 +1,13 @@
+const { check, validationResult } = require('express-validator');
 const Vacante = require('../models/Vacantes');
 
 module.exports = {
     formularioNuevaVacante: (req, res) => {
         res.render('nueva-vacante', {
             pageName: 'Nueva vacante',
-            tagline: 'Llena el formulario y publica tu vacante.'
+            tagline: 'Llena el formulario y publica tu vacante.',
+            cerrarSesion: true,
+            nombre: req.user.nombre,
         })
     },
     agregarVacante: async (req, res) => {
@@ -35,7 +38,9 @@ module.exports = {
 
         res.render('editar-vacante', {
             vacante,
-            pageName: `Editar - ${vacante.titulo}`
+            pageName: `Editar - ${vacante.titulo}`,
+            cerrarSesion: true,
+            nombre: req.user.nombre,
         });
     },
     editarVacante: async (req, res, next) => {
@@ -50,5 +55,23 @@ module.exports = {
         );
 
         res.redirect(`/vacantes/${vacante.url}`);
+    },
+    validarVacante: (req, res) => {
+        const errores = validationResult(req);
+
+        if (!errores.isEmpty()) {
+            let err = errores.errors;
+
+            req.flash('error', err.map(error => error.msg));
+            res.render('nueva-vacante', {
+                pageName: 'Nueva vacante',
+                tagline: 'Llena el formulario y publica tu vacante.',
+                cerrarSesion: true,
+                nombre: req.user.nombre,
+                mensajes: req.flash()
+            });
+            return;
+        }
+        next()
     }
 }
