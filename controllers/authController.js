@@ -20,7 +20,14 @@ module.exports = {
         res.render('administracion', {
             pageName: 'Panel de administración',
             tagline: 'Crea y administra tus vacantes desde aquí',
+            cerrarSesion: true,
+            nombre: req.user.nombre,
             vacantes
         });
+    },
+    cerrarSesion: (req ,res) => {
+        req.logout();
+        req.flash('correcto', 'Cerraste sesión correctamente');
+        return res.redirect('/iniciar-sesion');
     }
 }
