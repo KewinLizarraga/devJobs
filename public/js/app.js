@@ -1,3 +1,6 @@
+import axios from 'axios';
+import Swal from 'sweetalert2';
+
 document.addEventListener('DOMContentLoaded', () => {
     const skills = document.querySelector('.lista-conocimientos');
     let alertas = document.querySelector('.alertas');   // Clean alerts
@@ -8,6 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
         skills.addEventListener('click', agregarSkills);
         skillsSeleccionados();      // When we are in edit, we call this function
     }
+
+    const vacanteListado = document.querySelector('.panel-administracion');
+    if (vacanteListado) vacanteListado.addEventListener('click', accionesListado);
 });
 
 const skills = new Set();
@@ -46,4 +52,43 @@ const limpiarAlertas = () => {
             clearInterval(interval);
         }
     }, 2000);
+}
+
+const accionesListado = (e) => {
+    e.preventDefault();
+    if (e.target.dataset.eliminar) {
+        Swal.fire({
+            title: 'Confirmar eliminación?',
+            text: "Una vez eliminado, no se puede recuperar",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, eliminar',
+            cancelButtonText: 'No, cancelar'
+        }).then((result) => {
+            if (result.value) {
+                const url = `${location.origin}/vacantes/eliminar/${e.target.dataset.eliminar}`;
+
+                axios.delete(url, { params: { url } }).then(function (respuesta) {
+                    if (respuesta.status === 200) {
+                        Swal.fire(
+                            'Eliminado!',
+                            respuesta.data,
+                            'success'
+                        );
+                        e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
+                    }
+                }).catch(() => {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Hubo un error',
+                        text: 'No se pudo eliminar'
+                    });
+                });
+            }
+        })
+    } else if (e.target.tagName === 'A') {
+        window.location.href = e.target.href;
+    }
 }

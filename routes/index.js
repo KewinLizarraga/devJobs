@@ -29,9 +29,7 @@ router.post('/vacantes/nueva',
     vacantesController.validarVacante,
     vacantesController.agregarVacante
 );
-
 router.get('/vacantes/:url', vacantesController.mostrarVacante);
-
 router.get('/vacantes/editar/:url', authController.verificarUsuario, vacantesController.formEditarVacante);
 router.post('/vacantes/editar/:url',
     authController.verificarUsuario,
@@ -51,6 +49,7 @@ router.post('/vacantes/editar/:url',
     vacantesController.validarVacante,
     vacantesController.editarVacante
 );
+router.delete('/vacantes/eliminar/:id', vacantesController.eliminarVacante);
 
 router.get('/crear-cuenta', usuariosController.formCrearCuenta);
 router.post('/crear-cuenta',
@@ -70,7 +69,6 @@ router.post('/crear-cuenta',
 
 router.get('/iniciar-sesion', usuariosController.formIniciarSesion);
 router.post('/iniciar-sesion', authController.autenticarUsuario);
-
 router.get('/cerrar-sesion', authController.verificarUsuario, authController.cerrarSesion);
 
 router.get('/administracion', authController.verificarUsuario, authController.mostrarPanel);
