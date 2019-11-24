@@ -83,6 +83,7 @@ router.post('/editar-perfil',
         check('email').not().isEmpty().withMessage('El email no puede ir vacio'),
     ],
     usuariosController.validarPerfil,
+    usuariosController.subirImagen,
     usuariosController.editarPerfil
 );
 

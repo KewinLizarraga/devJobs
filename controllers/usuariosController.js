@@ -1,4 +1,6 @@
 const { check, sanitizeBody, validationResult } = require('express-validator');
+const multer = require('multer');
+const shortid = require('shortid');
 const Usuarios = require('../models/Usuarios');
 
 module.exports = {
@@ -48,6 +50,7 @@ module.exports = {
         res.render('editar-perfil', {
             pageName: 'Edita tu perfil en DevJobs',
             usuario: req.user,
+            imagen: req.user.imagen,
             cerrarSesion: true,
             nombre: req.user.nombre,
         });
@@ -56,7 +59,9 @@ module.exports = {
         const usuario = await Usuarios.findById(req.user._id);
         usuario.nombre = req.body.nombre;
         usuario.email = req.body.email;
+
         if (req.body.password) usuario.password = req.body.password;
+        if (req.file) usuario.imagen = req.file.filename;
 
         await usuario.save();
         req.flash('correcto', 'Cambios guardados correctamente.');
@@ -74,6 +79,7 @@ module.exports = {
             res.render('editar-perfil', {
                 pageName: 'Edita tu perfil en DevJobs',
                 usuario: req.user,
+                imagen: req.user.imagen,
                 cerrarSesion: true,
                 nombre: req.user.nombre,
                 mensajes: req.flash()
@@ -81,5 +87,40 @@ module.exports = {
             return;
         }
         next();
-    }
+    },
+    subirImagen: (req, res, next) => {
+        upload(req, res, function (error) {
+            if (error) {
+                if (error instanceof multer.MulterError) {
+                    if (error.code === 'LIMIT_FILE_SIZE') req.flash('error', 'El archivo es muy grande: Máximo 100kb');
+                    else req.flash('error', error.message);
+                }
+                else req.flash('error', error.message);
+
+                res.redirect('/administracion');
+                return;
+            } else {
+                return next();
+            }
+        });
+    },
 }
+
+const configuracionMulter = {
+    limits: { fileSize: 100000 },
+    storage: fileStorage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, __dirname + '../../public/uploads/perfiles');
+        },
+        filename: (req, file, cb) => {
+            const extension = file.mimetype.split('/')[1];
+            cb(null, `${shortid.generate()}.${extension}`);
+        }
+    }),
+    fileFilter(req, file, cb) {
+        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') cb(null, true);
+        else cb(new Error('Formato no valido'), false);
+    },
+}
+
+const upload = multer(configuracionMulter).single('imagen');
