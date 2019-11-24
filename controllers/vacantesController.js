@@ -8,6 +8,7 @@ module.exports = {
             tagline: 'Llena el formulario y publica tu vacante.',
             cerrarSesion: true,
             nombre: req.user.nombre,
+            imagen: req.user.imagen,
         })
     },
     agregarVacante: async (req, res) => {
@@ -21,7 +22,7 @@ module.exports = {
         res.redirect(`/vacantes/${nuevaVacante.url}`);
     },
     mostrarVacante: async (req, res, next) => {
-        const vacante = await Vacante.findOne({ url: req.params.url });
+        const vacante = await Vacante.findOne({ url: req.params.url }).populate('autor');
 
         if (!vacante) return next();
 
@@ -41,6 +42,7 @@ module.exports = {
             pageName: `Editar - ${vacante.titulo}`,
             cerrarSesion: true,
             nombre: req.user.nombre,
+            imagen: req.user.imagen,
         });
     },
     editarVacante: async (req, res, next) => {
@@ -56,7 +58,7 @@ module.exports = {
 
         res.redirect(`/vacantes/${vacante.url}`);
     },
-    validarVacante: (req, res) => {
+    validarVacante: (req, res, next) => {
         const errores = validationResult(req);
 
         if (!errores.isEmpty()) {

@@ -9,9 +9,7 @@ module.exports = {
         badRequestMessage: 'Ambos campos son obligatorios'
     }),
     verificarUsuario: (req, res, next) => {
-        if (req.isAuthenticated()) {
-            return next();
-        }
+        if (req.isAuthenticated()) return next();
         res.redirect('/iniciar-sesion');
     },
     mostrarPanel: async (req, res) => {
@@ -22,6 +20,7 @@ module.exports = {
             tagline: 'Crea y administra tus vacantes desde aquí',
             cerrarSesion: true,
             nombre: req.user.nombre,
+            imagen: req.user.imagen,
             vacantes
         });
     },
