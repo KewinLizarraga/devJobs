@@ -87,4 +87,8 @@ router.post('/editar-perfil',
     usuariosController.editarPerfil
 );
 
+router.post('/vacantes/:url', vacantesController.subirCV, vacantesController.contactar);
+
+router.get('/candidatos/:id', authController.verificarUsuario, vacantesController.mostrarCandidatos);
+
 module.exports = router;
