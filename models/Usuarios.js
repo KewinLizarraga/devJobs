@@ -7,7 +7,7 @@ const usuariosSchema = new mongoose.Schema({
     nombre: { type: String, required: true },
     password: { type: String, required: true, trim: true },
     token: String,
-    exprira: Date,
+    expira: Date,
     imagen: String
 });
 
