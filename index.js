@@ -26,11 +26,8 @@ app.engine('handlebars',
     })
 );
 app.set('view engine', 'handlebars');
-
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(cookieParser());
-
 app.use(session({
     secret: process.env.SECRET,
     key: process.env.KEY,
